@@ -11,11 +11,16 @@ const Page = () => {
   ];
 
   const handleButtonClick = (index) => {
-    const ws = new WebSocket('ws://localhost:8080');
+    // Connect to the WebSocket server (on the same server or localhost for local dev)
+    const wsUrl = process.env.NODE_ENV === 'production' 
+      ? 'wss://stream1tablet.vercel.app/api/websocket/route.js' 
+      : 'ws://localhost:8080'; // Use ws:// for local development
+
+    const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
       console.log('WebSocket connection established in Project One.');
-      // Send video URL to Project Two via WebSocket
+      // Send the selected video URL to the other project (Project Two)
       ws.send(JSON.stringify({ videoSrc: videoUrls[index] }));
     };
 
@@ -26,20 +31,6 @@ const Page = () => {
     ws.onerror = (error) => {
       console.error('WebSocket error in Project One:', error);
     };
-  };
-
-  // Fullscreen handler
-  const handleFullScreen = () => {
-    const element = document.documentElement;
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) { // Firefox
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
-      element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) { // IE/Edge
-      element.msRequestFullscreen();
-    }
   };
 
   return (
@@ -56,13 +47,6 @@ const Page = () => {
           </button>
         ))}
       </div>
-      {/* Fullscreen Button */}
-      <button
-        onClick={handleFullScreen}
-        className="mt-8 px-6 py-3 bg-green-500 text-white text-lg font-semibold rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105"
-      >
-        Enter Full Screen
-      </button>
     </div>
   );
 };
