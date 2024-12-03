@@ -11,7 +11,7 @@ const Page = () => {
   ];
 
   const handleButtonClick = (index) => {
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('ws://localhost:8080'); 
 
     ws.onopen = () => {
       console.log('WebSocket connection established in Project One.');
