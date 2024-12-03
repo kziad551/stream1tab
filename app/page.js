@@ -10,35 +10,30 @@ const Page = () => {
     'https://vimeo.com/946171968',
   ];
 
-  const handleButtonClick = (index) => {
-    const ws = new WebSocket('ws://localhost:8080'); 
+  const handleButtonClick = async (index) => {
+    const videoUrl = videoUrls[index];
+    
+    // Dynamically determine the backend API URL
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
 
-    ws.onopen = () => {
-      console.log('WebSocket connection established in Project One.');
-      // Send video URL to Project Two via WebSocket
-      ws.send(JSON.stringify({ videoSrc: videoUrls[index] }));
-    };
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/receiveVideo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ videoSrc: videoUrl }),
+      });
 
-    ws.onclose = () => {
-      console.log('WebSocket connection closed in Project One.');
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error in Project One:', error);
-    };
-  };
-
-  // Fullscreen handler
-  const handleFullScreen = () => {
-    const element = document.documentElement;
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) { // Firefox
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
-      element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) { // IE/Edge
-      element.msRequestFullscreen();
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('Video URL sent successfully');
+      } else {
+        console.error('Error:', data.error);
+      }
+    } catch (error) {
+      console.error('Failed to send video URL:', error);
     }
   };
 
@@ -56,13 +51,6 @@ const Page = () => {
           </button>
         ))}
       </div>
-      {/* Fullscreen Button */}
-      <button
-        onClick={handleFullScreen}
-        className="mt-8 px-6 py-3 bg-green-500 text-white text-lg font-semibold rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105"
-      >
-        Enter Full Screen
-      </button>
     </div>
   );
 };
