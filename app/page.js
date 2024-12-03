@@ -14,7 +14,7 @@ const Page = () => {
     const videoUrl = videoUrls[index];
     
     // Dynamically determine the backend API URL
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+    const apiBaseUrl = 'https://stream1-chi.vercel.app/';
 
     try {
       const response = await fetch(`${apiBaseUrl}/api/receiveVideo`, {
