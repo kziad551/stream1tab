@@ -4,10 +4,10 @@ import React from 'react';
 
 const Page = () => {
   const videoUrls = [
-    'https://www.youtube.com/watch?v=hy-Rqr6lwvE',
-    'https://www.youtube.com/watch?v=3EeSgpwl6po',
-    'https://www.youtube.com/watch?v=p4BsBw1RyHs',
-    'https://www.youtube.com/watch?v=YAMDYu3mk3k',
+    'https://vimeo.com/1030831285',
+    'https://vimeo.com/1033941870',
+    'https://vimeo.com/1030020459',
+    'https://vimeo.com/946171968',
   ];
 
   const handleButtonClick = (index) => {
@@ -15,22 +15,22 @@ const Page = () => {
 
     ws.onopen = () => {
       console.log('WebSocket connection established in Project One.');
-    };
-
-    ws.onmessage = (event) => {
-      console.log('Received message from WebSocket:', event.data);
-    };
-
-    // Send video URL to Project Two via WebSocket
-    ws.onopen = () => {
+      // Send video URL to Project Two via WebSocket
       ws.send(JSON.stringify({ videoSrc: videoUrls[index] }));
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed in Project One.');
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error in Project One:', error);
     };
   };
 
-  // Function to trigger fullscreen mode
+  // Fullscreen handler
   const handleFullScreen = () => {
-    const element = document.documentElement; // This selects the <html> element
-
+    const element = document.documentElement;
     if (element.requestFullscreen) {
       element.requestFullscreen();
     } else if (element.mozRequestFullScreen) { // Firefox
@@ -56,11 +56,12 @@ const Page = () => {
           </button>
         ))}
       </div>
+      {/* Fullscreen Button */}
       <button
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded text-lg hover:bg-green-600 transition"
         onClick={handleFullScreen}
+        className="mt-8 px-6 py-3 bg-green-500 text-white text-lg font-semibold rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105"
       >
-        Full Screen
+        Enter Full Screen
       </button>
     </div>
   );
